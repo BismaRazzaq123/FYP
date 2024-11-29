@@ -73,7 +73,7 @@ def TakeCommand():
 
 def generate_ai_content(prompt):
     try:
-        speak("Thinking...")
+        speak("Thinking..")
         response = model.generate_content(prompt)
         answer = response.text
         source = "Source: gemini-1.5-flash"
