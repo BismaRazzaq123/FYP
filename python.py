@@ -76,7 +76,7 @@ def generate_ai_content(prompt):
         speak("Thinking...")
         response = model.generate_content(prompt)
         answer = response.text
-        source = "Source= gemini-1.5-flash"
+        source = "Source: gemini-1.5-flash"
         print("According to", source)
         speak ("According to Google Gemini AI")
         print("AI Response:", answer)
