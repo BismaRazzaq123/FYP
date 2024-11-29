@@ -1,0 +1,429 @@
+import pyttsx3 # type: ignore #pip install pyttsx3 (For Speak)
+import datetime 
+import speech_recognition as sr # pip install speech_recognition
+import wikipedia # pip install wikipedia
+import smtplib
+import webbrowser as wb 
+import psutil #pip install psutil
+import pyjokes #pip install pyjokes 
+import os
+import pyautogui  #pip install pyautogui
+import random
+import wolframalpha
+import json
+from urllib.request import urlopen
+import requests
+import time
+import winshell
+import google.generativeai as genai  # Gemini API
+import pywhatkit as kit 
+
+# Google Gemini API configuration
+genai.configure(api_key="AIzaSyD6fdZE0-XAHh4eU0LQC9xFF7Z3A3MmKXs")
+model = genai.GenerativeModel("gemini-1.5-flash")
+
+engine = pyttsx3.init()
+wolframalpha_app_id = 'J7WW76-LGHLU775E6'
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
+
+def time_():
+    time = datetime.datetime.now().strftime("%I:%M:%S")  # for 12-hour clock
+    speak("The current time is")
+    speak(time)
+
+def date():
+    year = (datetime.datetime.now().year)
+    month = (datetime.datetime.now().month)
+    date = (datetime.datetime.now().day)
+    speak("The current date is")
+    speak(date)
+    speak(month)
+    speak(year)
+
+def wishme():
+    speak("Welcome Mam")
+    hour = datetime.datetime.now().hour
+    if hour >= 6 and hour < 12:
+        speak("Good Morning!")
+    elif hour >= 12 and hour < 18:
+        speak("Good Afternoon!")
+    elif hour >= 18 and hour < 24:
+        speak("Good Evening!")
+    else:
+        speak("Good Night!")
+    speak("Nexy at your service. Please tell me how can I help you?")
+
+def TakeCommand():
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening...")
+        r.pause_threshold = 1
+        audio = r.listen(source)
+    try:
+        print("Recognizing...")
+        query = r.recognize_google(audio, language='en-pk')
+        print(query)
+    except Exception as e:
+        print(e)
+        print("Say that again please...")
+        return "None"
+    return query
+
+def generate_ai_content(prompt):
+    try:
+        speak("Thinking...")
+        response = model.generate_content(prompt)
+        answer = response.text
+        source = "Source: gemini-1.5-flash"
+        print("According to", source)
+        speak ("According to Google Gemini AI")
+        print("AI Response:", answer)
+        speak(answer)
+    except Exception as e:
+        print("Error:", e)
+        speak("Sorry, I could not generate a response.")
+
+def sendEmail(to, subject, content):
+    sender_email = 'myjarvis6464@gmail.com'  # my email
+    app_password = 'xasu itoz wiaj cfes'  # my App Password
+
+    try:
+        # Setup the SMTP server
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.ehlo()
+        server.starttls()
+        server.login(sender_email, app_password)
+
+        # Prepare the email content
+        email_message = f"Subject: {subject}\n\n{content}"
+
+        # Send the email
+        server.sendmail(sender_email, to, email_message)
+        server.quit()  # Close the connection
+        print(f"Email sent successfully to {to}")
+    except Exception as e:
+        print(f"Error: {e}")
+        speak("Unable to send the email. Please check the details and try again.")
+
+def cpu():
+    usage=str(psutil.cpu_percent())
+    speak('CPU is at'+ usage)
+    battery = psutil.sensors_battery()
+    speak("Battery is at")
+    speak(battery.percent)
+
+def jokes():
+    speak(pyjokes.get_joke())
+
+def Introduction():
+    speak("I am Nexy 1.0 , Personal AI assistant , "
+    "I am created by Bisma , "
+    "I can help you in various regards , "
+    "I can search for you on the Internet , "
+    "I can also grab definitions for you from wikipedia , "
+    "In layman terms , I can try to make your life a bed of roses , "
+    "Where you just have to command me , and I will do it for you , ")
+
+def Creator():
+    speak("Bisma ia a girl currently studying in BS Computer Science at University Of Education ,"
+    "She has a deep interest in Robotics, Artificial Intelligence and Machine Learning ,"
+    "If you are facing any problem regarding the 'Nexy', She will be glad to help you ")
+
+
+def screenshot():
+    # Take a screenshot
+    img = pyautogui.screenshot()
+    
+    # Define a valid file path and name with an extension
+    save_path = r"C:\pics\screenshot.png"  # Use raw string to handle backslashes
+    
+    # Ensure the directory exists
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    
+    # Save the screenshot
+    img.save(save_path)
+    print(f"Screenshot saved at {save_path}")
+
+
+
+if __name__ == '__main__':
+    wishme()
+    while True:
+        query = TakeCommand().lower()
+
+        if 'time' in query:
+            time_()
+        elif 'date' in query:
+            date()
+        elif 'wikipedia' in query:
+            speak("Searching...")
+            query = query.replace("wikipedia", "")
+            result = wikipedia.summary(query, sentences=3)
+            speak("According to Wikipedia")
+            print(result)
+            speak(result)
+        elif 'ask ai' in query or 'explain' in query or 'how' in query or 'what' in query:
+            speak("What would you like to know?")
+            prompt = TakeCommand()
+            generate_ai_content(prompt)    
+        elif 'send email' in query:
+            try:
+                speak("What should I say?")
+                content = TakeCommand()
+                speak("What is the subject of the email?")
+                subject = TakeCommand()
+                speak("Who is the recipient?")
+                recipient = input("Enter recipient's email address: ")
+                sendEmail(recipient, subject, content)
+                speak("The email has been sent successfully.")
+            except Exception as e:
+                print(e)
+                speak("Unable to send the email.")
+        elif 'open youtube' in query:
+            speak("What should I search?")
+            Search_term = TakeCommand().lower()
+            speak("Here we go to Youtube\n")
+            wb.open("https://www.youtube.com/results?search_query=" + Search_term)
+        elif 'search google' in query:
+            speak("What should I search?")
+            Search_term = TakeCommand().lower()
+            wb.open('https://www.google.com/search?q=' + Search_term)
+        elif 'cpu' in query:
+            cpu()
+        elif 'joke' in query:
+            jokes()
+        elif 'go offline' in query:
+            speak("going Offline mam!")
+            quit() 
+        elif 'go offline' in query:
+         speak("Going offline, ma'am!")
+         os._exit(0)
+        
+        elif 'take screenshot' in query:
+            screenshot()
+            speak("Screenshot taken and saved!") 
+
+        elif "write note" in query:
+            speak("What should I write, ma'am?")
+            note = TakeCommand()
+          # Ensure the directory exists
+            save_path = r"E:\Note\notes.txt"  # Raw string for correct path handling
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+
+            try:
+                # Open the file in write mode
+                with open(save_path, 'w') as file:
+                    speak("Ma'am, should I include the date and time?")
+                    dt = TakeCommand()
+
+                    if 'yes' in dt or 'sure' in dt:
+                        # Add date and time
+                        strTime = datetime.datetime.now().strftime("%H:%M:%S")
+                        file.write(strTime + " :- " + note + "\n")
+                        speak("Done! Note with date and time is saved.")
+                    else:
+                        file.write(note + "\n")
+                        speak("Done! Note is saved without date and time.")
+            except Exception as e:
+                print(f"Error writing the note: {e}")
+                speak("Sorry, I couldn't write the note. Please try again.")       
+ 
+        elif 'play songs' in query:
+            songs_dir = 'E:\songs'
+            music = os.listdir(songs_dir)
+            speak("What should i play? ")
+            speak('Select a number...')
+            ans = (TakeCommand().lower())
+            while('number' not in ans and ans != 'random' and ans != 'you choose'):
+              speak('I could not understand you. Please Try again.')
+              ans = (TakeCommand().lower())
+            if 'number' in ans:
+             no = int(ans.replace('number',''))
+            if 'random' or 'you choose' in ans:
+                no = random.randint(1,6)
+            os.startfile(os.path.join(songs_dir, music[no]))
+        elif "calculate" in query:
+            client = wolframalpha.Client(wolframalpha_app_id)
+            indx = query.lower().split().index('calculate')
+            query = query.split()[indx + 1:]
+            res = client.query(' '.join(query))
+            answer = next(res.results).text
+            source = "Source: WolframAlpha"
+            print("According to WolframAlpha")
+            speak("According to WolframAlpha")
+            print("The answer is " + answer)
+            speak("The answer is " + answer) 
+        elif "what is" in query or "who is" in query: 
+			# Use the same API key that we have generated earlier
+            client = wolframalpha.Client(wolframalpha_app_id)
+            res = client.query(query)
+            try:
+                print (next(res.results).text)
+                speak (next(res.results).text)
+            except StopIteration:
+                print ("No results") 
+        elif 'remember that' in query:
+            speak("What should I remember ?")
+            memory = TakeCommand()
+            speak("You asked me to remember that"+memory)
+            remember = open(r'C:\Users\PMLS\Desktop\memory.txt', 'w') 
+            remember.write(memory)
+            remember.close()
+        elif 'do you remember anything' in query:
+           try:
+             # Read the memory from the text file
+            with open(r'C:\Users\PMLS\Desktop\memory.txt', 'r') as remember:
+              remembered_text = remember.read()
+              # Speak and print the remembered text
+              speak("You asked me to remember that " + remembered_text)
+              print("You asked me to remember that: " + remembered_text)
+           except FileNotFoundError:
+              speak("I don't have any memories saved.")
+              print("I don't have any memories saved.")
+  
+
+        elif "where is" in query:
+         location = query.replace("where is", "").strip()
+         if location:
+          speak(f"Locating {location}")
+          url = f"https://www.google.com/maps/place/{location}"
+          print(f"Opening URL: {url}")  # Debug: Print the URL
+          wb.open(url)
+         else:
+          speak("I couldn't understand the location. Please try again.")
+        elif 'news' in query:
+            try:
+                jsonObj = urlopen(' https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=600438076054440da76533f261acb728')
+                data = json.load(jsonObj)
+                i = 1
+                speak('here are some top news')
+                print('''=============== TOP HEADLINES ============'''+ '\n')
+                for item in data['articles']:
+                    print(str(i) + '. ' + item['title'] + '\n')
+                    print(item['description'] + '\n')
+                    speak(str(i) + '. ' + item['title'] + '\n')
+                    i += 1
+            except Exception as e:
+                print(str(e)) 
+        elif 'log out' in query:
+            os.system("shutdown -l")
+        elif 'restart' in query:
+            os.system("shutdown /r /t 1")
+        elif 'shutdown' in query:
+            os.system("shutdown /s /t 1")
+        elif 'how are you' in query:
+         speak("I am fine, Mam. Thanks for asking.")
+         speak("How are you, Mam?")
+         # Capture the user's response
+         ans = TakeCommand()  # Replace `take_command()` with your voice input function
+         if 'fine' in ans or 'good' in ans:
+          speak("It's good to know that you're fine.")
+         else:
+           speak("God bless you.")
+        elif "who am i" in query:
+            speak("If you can talk, then definitely you are a human")
+        elif "why you came to this world" in query:
+            speak("It is a secret")
+        elif "define love" in query or "tell me about love" in query:
+            speak("It is 7th sense that destroy all other senses ")
+        elif "empty recycle bin" in query:
+            winshell.recycle_bin().empty(confirm = False, show_progress = False, sound = True)
+            speak("Recycle Bin Recycled") 
+        elif "tell me about yourself" in query or "who are you" in query:
+            Introduction()
+        elif "tell me about your developer" in query:
+            Creator()
+        elif "will you be my girlfriend" in query or "will you be my boyfriend" in query:
+            speak("I'm not sure about, may be you should give me some time")
+            
+        elif "i love you" in query or "do you love me" in query:
+            speak("It's hard to understand, I am still trying to figure this out.")
+        elif "weather" in query:
+         api_key = "c3d9dcd557a55f5f1122d13730edfc24"  # Replace this with your actual API key
+         base_url = "http://api.openweathermap.org/data/2.5/weather?"
+         speak("Please tell me the city name.")
+         print("City name: ")
+         city_name = TakeCommand()
+         # Construct the complete API URL
+         complete_url = base_url + "appid=" + api_key + "&q=" + city_name + "&units=metric"
+         try:
+           # Make a request to the API
+           response = requests.get(complete_url)
+           x = response.json()  # Get JSON response
+           # Print the entire response for debugging
+           print("API Response:", x)
+           # Check if city is found
+           if x["cod"] == 200:  # If the response code is 200 (OK)
+             y = x["main"]
+             current_temperature = y["temp"]
+             current_pressure = y["pressure"]
+             current_humidity = y["humidity"]
+             z = x["weather"]
+             weather_description = z[0]["description"]
+             # Output and speak the weather information
+             weather_info = (
+                f"Temperature: {current_temperature}°C\n"
+                f"Atmospheric pressure: {current_pressure} hPa\n"
+                f"Humidity: {current_humidity}%\n"
+                f"Description: {weather_description}"
+            )
+             print(weather_info)
+             speak(weather_info)
+
+           else:
+             # Handle the case where city is not found
+             print("City not found, error code:", x["cod"])
+             speak("City not found.")
+
+         except requests.exceptions.RequestException as e:
+          print("Network error:", e)
+          speak("There was a network error. Please try again later.")
+         except KeyError as e:
+          print(f"Unexpected response format. Missing key: {e}")
+          speak("There was an error processing the weather information.")
+        elif "don't listen" in query or "stop listening" in query:
+          speak("For how many seconds should I stop listening?")
+          try:
+           ans = TakeCommand()
+           if ans:
+            # Convert spoken text to a number
+            ans = int(ans)
+            speak(f"Okay, I will stop listening for {ans} seconds.")
+            time.sleep(ans)
+            speak("I am back and listening now.")
+           else:
+              speak("I couldn't understand the duration.")
+          except ValueError:
+              speak("Please say a valid number.")
+          except Exception as e:
+               speak(f"An error occurred: {str(e)}")
+
+        elif 'open ms word' in query:
+            speak("Opening Word")
+            try:
+                os.startfile(r"C:\Program Files\Google\Chrome\Application\chrome.exe")
+
+            except Exception as e:
+                speak(f"An error occurred: {str(e)}")
+
+        elif "read note" in query:
+            save_path = r"E:\Note\notes.txt"
+            try:
+                print(f"Attempting to open file: {save_path}")  # Debug message
+                with open(save_path, 'r') as file:
+                    notes = file.read().strip()
+                    print(f"File Content: {notes}")  # Show content for debugging
+                    if notes:
+                        print("Your Notes:\n", notes)
+                        speak("Here are your notes:")
+                        speak(notes)
+                    else:
+                        speak("The notes file is empty.")
+            except FileNotFoundError:
+                speak("Sorry, the notes file does not exist.")
+            except Exception as e:
+                print(f"Error: {e}")
+                speak(f"An error occurred: {str(e)}")
+        
