@@ -91,7 +91,7 @@ def generate_ai_content(prompt):
         answer = response.text
         source = "Source: gemini-1.5-flash"
         print(f"According to {source}")
-        speak(f"According to {source}")
+        speak(f"According to {source}") 
         print("AI Response:", answer)
         speak(answer)
     except Exception as e:
@@ -134,9 +134,9 @@ def cpu():
     speak(battery.percent)
 
 def jokes():
-    print(pyjokes.get_joke())
-    speak(pyjokes.get_joke())
-
+    joke = pyjokes.get_joke()
+    print(joke)
+    speak(joke)
 def Introduction():
     print("I am Nexy 1.0 , Personal AI assistant . "
     "I am created by Bisma Razzaq. "
@@ -286,6 +286,7 @@ if __name__ == '__main__':
             if 'random' or 'you choose' in ans:
                 no = random.randint(1,6)
             os.startfile(os.path.join(songs_dir, music[no]))
+
         elif "calculate" in query:
             client = wolframalpha.Client(wolframalpha_app_id)
             indx = query.lower().split().index('calculate')
@@ -293,8 +294,8 @@ if __name__ == '__main__':
             res = client.query(' '.join(query))
             answer = next(res.results).text
             source = "Source: WolframAlpha"
-            print("According to " , source)
-            speak("According to ", source)
+            print(f"According to  {source}" )
+            speak(f"According to  {source}"  )
             print("The answer is " + answer)
             speak("The answer is " + answer) 
         elif 'remember that' in query:
