@@ -17,7 +17,7 @@ import time
 import winshell
 import google.generativeai as genai  # Gemini API
 import pywhatkit as kit 
-
+import cv2
 # Google Gemini API configuration
 genai.configure(api_key="AIzaSyBOAkMv-bxYz6RsQewoZ7DcOGBDCFFUsOo")
 model = genai.GenerativeModel("gemini-1.5-flash")
@@ -132,7 +132,7 @@ def cpu():
     speak("Battery is at")
     print(battery.percent)
     speak(battery.percent)
-
+ 
 def jokes():
     joke = pyjokes.get_joke()
     print(joke)
@@ -504,4 +504,53 @@ if __name__ == '__main__':
             except Exception as e:
                 print(f"An error occurred: {str(e)}")
                 speak(f"An error occurred: {str(e)}")
-        
+        elif 'open notepad' in query:
+            print("Opening Notepad")
+            speak("Opening Notepad")
+            try:
+                os.startfile(r"C:\Windows\notepad.exe")
+
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+                speak(f"An error occurred: {str(e)}")
+        elif 'open github' in query:
+            print("Opening GitHub")
+            speak("Opening GitHub")
+            try:
+                os.startfile(r"C:\Users\PMLS\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\GitHub, Inc\GitHub Desktop.lnk")
+
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+                speak(f"An error occurred: {str(e)}")
+        elif 'open camera' in query:
+          print("Opening camera")
+          speak("Opening camera")
+          cap = cv2.VideoCapture(0)
+          # Check if the camera opened successfully
+          if not cap.isOpened():
+            print("Error: Could not open camera.")
+            speak("Error: Could not open camera.")
+            # Set a flag to indicate that the camera cannot be opened
+            camera_error = True
+          else:
+             camera_error = False
+          if camera_error:
+            # If camera failed to open, skip to the next part of the code
+            pass
+          else:
+            while True:
+              ret, img = cap.read()
+              # If frame is read correctly, ret is True
+              if not ret:
+                print("Failed to grab frame.")
+                break
+
+              cv2.imshow('webcam', img)
+              # Wait for 1 ms for a key press (0 for indefinite)
+              k = cv2.waitKey(1)
+              # Escape key to break the loop
+              if k == 27:  
+                break
+             # Release the camera and close all windows when done
+        cap.release()
+        cv2.destroyAllWindows()
