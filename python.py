@@ -502,3 +502,12 @@ if __name__ == '__main__':
             except Exception as e:
                 print(f"An error occurred: {str(e)}")
                 speak(f"An error occurred: {str(e)}")
+
+        elif 'open GitHub' in query:
+            print("Opening Github")
+            speak("Opening Github")
+            try:
+                os.startfile(r"C:\Users\PMLS\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\GitHub, Inc")
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+                speak(f"An error occurred: {str(e)}")
