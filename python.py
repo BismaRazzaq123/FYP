@@ -18,6 +18,8 @@ import winshell
 import google.generativeai as genai  # Gemini API
 import pywhatkit as kit 
 import cv2
+from requests import get
+import webbrowser
 # Google Gemini API configuration
 genai.configure(api_key="AIzaSyBOAkMv-bxYz6RsQewoZ7DcOGBDCFFUsOo")
 model = genai.GenerativeModel("gemini-1.5-flash")
@@ -171,7 +173,6 @@ def screenshot():
     # Save the screenshot
     img.save(save_path)
     print(f"Screenshot saved at {save_path}")
-   
 
 
 if __name__ == '__main__':
@@ -552,5 +553,25 @@ if __name__ == '__main__':
               if k == 27:  
                 break
              # Release the camera and close all windows when done
-        cap.release()
-        cv2.destroyAllWindows()
+          cap.release()
+          cv2.destroyAllWindows()
+
+        elif 'tell my ip address' in query:
+            ip =  get('https://api.ipify.org').text
+            print(f'your ip address is {ip}')
+            speak(f'your ip address is {ip}')
+        elif 'open facebook' in query:
+             print("opening facebook")
+             speak("opening facebook")
+             webbrowser.open('www.facebook.com')
+        elif 'send message' in query:
+            print("Sending WhatsApp message")
+            speak("Sending WhatsApp message")
+            # Specify the time directly
+            hour = 0
+            minute = 0
+             #Send the WhatsApp message
+            kit.sendwhatmsg('+923477681780', 'this is testing protocol', hour, minute)
+        
+        
+           
