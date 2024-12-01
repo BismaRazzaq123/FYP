@@ -19,7 +19,7 @@ import google.generativeai as genai  # Gemini API
 import pywhatkit as kit 
 
 # Google Gemini API configuration
-genai.configure(api_key="AIzaSyD6fdZE0-XAHh4eU0LQC9xFF7Z3A3MmKXs")
+genai.configure(api_key="AIzaSyBOAkMv-bxYz6RsQewoZ7DcOGBDCFFUsOo")
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 engine = pyttsx3.init()
@@ -70,7 +70,7 @@ def TakeCommand():
     with sr.Microphone() as source:
         print("Listening...")
         speak("Listening...")
-        r.pause_threshold = 1
+        r.pause_threshold = 2
         audio = r.listen(source)
     try:
         print("Recognizing...")
@@ -90,13 +90,14 @@ def generate_ai_content(prompt):
         response = model.generate_content(prompt)
         answer = response.text
         source = "Source: gemini-1.5-flash"
-        print("According to", source)
-        speak("According to", source)
+        print(f"According to {source}")
+        speak(f"According to {source}")
         print("AI Response:", answer)
         speak(answer)
     except Exception as e:
         print("Error:", e)
         speak("Sorry, I could not generate a response.")
+
 
 def sendEmail(to, subject, content):
     sender_email = 'myjarvis6464@gmail.com'  # my email
@@ -502,12 +503,4 @@ if __name__ == '__main__':
             except Exception as e:
                 print(f"An error occurred: {str(e)}")
                 speak(f"An error occurred: {str(e)}")
-
-        elif 'open GitHub' in query:
-            print("Opening Github")
-            speak("Opening Github")
-            try:
-                os.startfile(r"C:\Users\PMLS\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\GitHub, Inc")
-            except Exception as e:
-                print(f"An error occurred: {str(e)}")
-                speak(f"An error occurred: {str(e)}")
+        
