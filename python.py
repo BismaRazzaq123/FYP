@@ -465,12 +465,21 @@ if __name__ == '__main__':
                print(f"An error occurred: {str(e)}")
                speak(f"An error occurred: {str(e)}")
 
-        elif 'open ms word' in query:
-            print("Opening Word")
-            speak("Opening Word")
+        elif 'open chrome' in query:
+            print("Opening chrome")
+            speak("Opening chrome")
             try:
                 os.startfile(r"C:\Program Files\Google\Chrome\Application\chrome.exe")
 
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+                speak(f"An error occurred: {str(e)}")
+        
+        elif 'close chrome' in query:
+            print("okay mam, closing chrome")
+            speak("okay mam, closing chrome")
+            try:
+                os.system('taskkill /f /im chrome.exe')
             except Exception as e:
                 print(f"An error occurred: {str(e)}")
                 speak(f"An error occurred: {str(e)}")
@@ -496,6 +505,7 @@ if __name__ == '__main__':
             except Exception as e:
                 print(f"Error: {e}")
                 speak(f"An error occurred: {str(e)}")
+
         elif 'open command prompt' in query:
             print("Opening command prompt")
             speak("Opening command prompt")
@@ -505,6 +515,16 @@ if __name__ == '__main__':
             except Exception as e:
                 print(f"An error occurred: {str(e)}")
                 speak(f"An error occurred: {str(e)}")
+
+        elif 'close command prompt' in query:
+            print("okay mam, closing command prompt")
+            speak("okay mam, closing command prompt")
+            try:
+              os.system('taskkill /f /im cmd.exe')
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+                speak(f"An error occurred: {str(e)}")
+
         elif 'open notepad' in query:
             print("Opening Notepad")
             speak("Opening Notepad")
@@ -514,10 +534,16 @@ if __name__ == '__main__':
             except Exception as e:
                 print(f"An error occurred: {str(e)}")
                 speak(f"An error occurred: {str(e)}")
+
         elif 'close notepad' in query:
             print("okay mam, closing notepad")
             speak("okay mam, closing notepad")
-            os.system('taskkill /f /im notepad.exe')
+            try:
+              os.system('taskkill /f /im notepad.exe')
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+                speak(f"An error occurred: {str(e)}")
+
         elif 'open github' in query:
             print("Opening GitHub")
             speak("Opening GitHub")
@@ -527,6 +553,16 @@ if __name__ == '__main__':
             except Exception as e:
                 print(f"An error occurred: {str(e)}")
                 speak(f"An error occurred: {str(e)}")
+
+        elif 'close github' in query:
+            print("okay mam, closing github")
+            speak("okay mam, closing github")
+            try:
+                os.system('taskkill /f /im GitHubDesktop.exe')
+            except Exception as e:
+                print(f"An error occurred: {str(e)}")
+                speak(f"An error occurred: {str(e)}")
+
         elif 'open camera' in query:
           print("Opening camera")
           speak("Opening camera")
@@ -564,10 +600,25 @@ if __name__ == '__main__':
             ip =  get('https://api.ipify.org').text
             print(f'your ip address is {ip}')
             speak(f'your ip address is {ip}')
+
         elif 'open facebook' in query:
              print("opening facebook")
              speak("opening facebook")
              webbrowser.open('www.facebook.com')
+
+        elif 'close facebook' in query:
+          print("Closing Facebook")
+          speak("Closing Facebook")
+          try:
+           os.system('taskkill /f /im chrome.exe')  # For Google Chrome
+           os.system('taskkill /f /im msedge.exe')  # Uncomment for Microsoft Edge
+           # os.system('taskkill /f /im firefox.exe')  # Uncomment for Mozilla Firefox
+           speak("Facebook and the browser have been closed.")
+          except Exception as e:
+           print(f"An error occurred: {str(e)}")
+           speak(f"An error occurred: {str(e)}")
+
+
         elif 'send message' in query:
            speak("Please provide the phone number with country code.")
            # Take phone number input from the user
@@ -590,4 +641,45 @@ if __name__ == '__main__':
            except Exception as e:
              print(f"An error occurred: {e}")
              speak("I encountered an error while sending the message.")
-        
+
+        elif 'set alarm' in query:
+           # Ask the user for the time input
+           print("Please enter the time for the alarm (hour and minute).")
+           speak("Please enter the time for the alarm (hour and minute).")
+           try:
+              # Get the hour and minute from user input
+              speak("Enter hour")
+              hour = int(input("Enter the hour (0-23): "))
+              speak("Enter minute")
+              minute = int(input("Enter the minute (0-59): "))
+              # Validate the time input
+              if 0 <= hour <= 23 and 0 <= minute <= 59:
+                print(f"Alarm is set for {hour}:{minute}.")
+                speak(f"Alarm is set for {hour}:{minute}.")
+                # Continuously check if the current time matches the alarm time
+                while True:
+                    current_time = datetime.datetime.now()
+                    current_hour = current_time.hour
+                    current_minute = current_time.minute
+                    # If the current time matches the alarm time, play the song
+                    if current_hour == hour and current_minute == minute:
+                        music_dir = "E:\\songs"  # Ensure the path is correct
+                        if os.path.exists(music_dir):
+                            songs = os.listdir(music_dir)
+                            if songs:
+                               print(f"Playing: {songs[0]}")
+                               os.startfile(os.path.join(music_dir, songs[0]))  # Play the first song
+                               break
+                            else:
+                                print("No songs found in the directory.")
+                                break
+                        else:
+                             print(f"Music directory '{music_dir}' does not exist.")
+                             break
+                    time.sleep(30)  # Wait for 30 seconds before checking again to avoid excessive CPU usage
+              else:
+                   print("Invalid time. Please enter valid hour (0-23) and minute (0-59).")
+    
+           except ValueError:
+               print("Invalid input. Please enter numbers only.")
+
