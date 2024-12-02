@@ -564,14 +564,34 @@ if __name__ == '__main__':
              print("opening facebook")
              speak("opening facebook")
              webbrowser.open('www.facebook.com')
-        elif 'send message' in query:
-            print("Sending WhatsApp message")
-            speak("Sending WhatsApp message")
+        #elif 'send message' in query:
+         #   print("Sending WhatsApp message")
+          #  speak("Sending WhatsApp message")
             # Specify the time directly
-            hour = 0
-            minute = 0
+           # hour = 12
+            #minute = 51
              #Send the WhatsApp message
-            kit.sendwhatmsg('+923477681780', 'this is testing protocol', hour, minute)
-        
-        
-           
+            #kit.sendwhatmsg('+923477681780', 'this is testing protocol', hour, minute)
+        elif 'send message' in query:
+           speak("Please provide the phone number with country code.")
+           # Take phone number input from the user
+           phone_number = TakeCommand().replace(" ", "") 
+           speak("What is the message?")
+           # Take message input from the user
+           message = TakeCommand() 
+           speak("At what hour should I send the message? Please provide a 24-hour format.")
+           # Take hour input from the user
+           hour = int(input("Enter the hour: "))
+           speak("At what minute should I send the message?")
+           # Take minute input from the user
+           minute = int(input("Enter the minute: "))
+           print(f"Sending WhatsApp message to {phone_number} at {hour}:{minute}")
+           speak(f"Sending WhatsApp message to {phone_number} at {hour}:{minute}")
+           # Send the WhatsApp message
+           try:
+             kit.sendwhatmsg(phone_number, message, hour, minute)
+             speak("Message sent successfully.")
+           except Exception as e:
+             print(f"An error occurred: {e}")
+             speak("I encountered an error while sending the message.")
+             
