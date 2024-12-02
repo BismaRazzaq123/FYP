@@ -232,9 +232,9 @@ if __name__ == '__main__':
             cpu()
         elif 'joke' in query:
             jokes()
-        elif 'go offline' in query:
-            print("going Offline mam!")
-            speak("going Offline mam!")
+        elif 'go offline' in query  or 'you can sleep' in query:
+            print("Okay, Bye mam!")
+            speak("Okay, Bye mam!")
             quit() 
         elif 'take screenshot' in query:
             screenshot()
@@ -514,6 +514,10 @@ if __name__ == '__main__':
             except Exception as e:
                 print(f"An error occurred: {str(e)}")
                 speak(f"An error occurred: {str(e)}")
+        elif 'close notepad' in query:
+            print("okay mam, closing notepad")
+            speak("okay mam, closing notepad")
+            os.system('taskkill /f /im notepad.exe')
         elif 'open github' in query:
             print("Opening GitHub")
             speak("Opening GitHub")
@@ -564,14 +568,6 @@ if __name__ == '__main__':
              print("opening facebook")
              speak("opening facebook")
              webbrowser.open('www.facebook.com')
-        #elif 'send message' in query:
-         #   print("Sending WhatsApp message")
-          #  speak("Sending WhatsApp message")
-            # Specify the time directly
-           # hour = 12
-            #minute = 51
-             #Send the WhatsApp message
-            #kit.sendwhatmsg('+923477681780', 'this is testing protocol', hour, minute)
         elif 'send message' in query:
            speak("Please provide the phone number with country code.")
            # Take phone number input from the user
@@ -594,4 +590,4 @@ if __name__ == '__main__':
            except Exception as e:
              print(f"An error occurred: {e}")
              speak("I encountered an error while sending the message.")
-             
+        
