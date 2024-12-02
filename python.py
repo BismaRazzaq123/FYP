@@ -20,6 +20,7 @@ import pywhatkit as kit
 import cv2
 from requests import get
 import webbrowser
+
 # Google Gemini API configuration
 genai.configure(api_key="AIzaSyBOAkMv-bxYz6RsQewoZ7DcOGBDCFFUsOo")
 model = genai.GenerativeModel("gemini-1.5-flash")
@@ -99,7 +100,6 @@ def generate_ai_content(prompt):
     except Exception as e:
         print("Error:", e)
         speak("Sorry, I could not generate a response.")
-
 
 def sendEmail(to, subject, content):
     sender_email = 'myjarvis6464@gmail.com'  # my email
@@ -211,11 +211,10 @@ if __name__ == '__main__':
                 recipient = input("Enter recipient's email address: ")
                 sendEmail(recipient, subject, content)
                 print("The email has been sent successfully.")
-                speak("The email has been sent successfully.")
             except Exception as e:
                 print(e)
                 print("Unable to send the email.")
-                speak("Unable to send the email.")
+       
         elif 'open youtube' in query:
             print("What should I search?")
             speak("What should I search?")
@@ -223,19 +222,24 @@ if __name__ == '__main__':
             print("Here we go to Youtube\n")
             speak("Here we go to Youtube\n")
             wb.open("https://www.youtube.com/results?search_query=" + Search_term)
+
         elif 'search google' in query:
             print("What should I search?")
             speak("What should I search?")
             Search_term = TakeCommand().lower()
             wb.open('https://www.google.com/search?q=' + Search_term)
+
         elif 'cpu' in query:
             cpu()
+
         elif 'joke' in query:
             jokes()
+
         elif 'go offline' in query  or 'you can sleep' in query:
             print("Okay, Bye mam!")
             speak("Okay, Bye mam!")
             quit() 
+
         elif 'take screenshot' in query:
             screenshot()
             speak("Screenshot taken and saved!") 
@@ -641,7 +645,7 @@ if __name__ == '__main__':
            except Exception as e:
              print(f"An error occurred: {e}")
              speak("I encountered an error while sending the message.")
-
+ 
         elif 'set alarm' in query:
            # Ask the user for the time input
            print("Please enter the time for the alarm (hour and minute).")
@@ -682,4 +686,4 @@ if __name__ == '__main__':
     
            except ValueError:
                print("Invalid input. Please enter numbers only.")
-
+        
