@@ -3,6 +3,10 @@ import datetime
 import speech_recognition as sr # pip install speech_recognition
 import wikipedia # pip install wikipedia
 import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 import webbrowser as wb 
 import psutil #pip install psutil
 import pyjokes #pip install pyjokes 
@@ -85,6 +89,62 @@ def TakeCommand():
         speak("Say that again please...")
         return "None"
     return query
+
+def send_emailing():
+    sender_email = 'myjarvis6464@gmail.com'
+    sender_password ='xasu itoz wiaj cfes'
+    
+    # Get email details from user dynamically
+    speak("Please provide the recipient's email ")
+    to_email = input("Please provide the recipient's email: ")
+    print("Please tell the subject of the email.")
+    speak("Please tell the subject of the email.")
+    subject = TakeCommand().lower() 
+    print("Please provide the body of email.")
+    speak("Please provide the body of email.")
+    body = TakeCommand().lower() 
+    speak("Please provide the file path to attach (or press Enter to skip): ")
+    file_path = input("Please provide the file path to attach (or press Enter to skip): ")
+    print(f"File path received: {file_path}") 
+    if file_path:  # Only proceed if file_path is provided
+        file_path = file_path.replace("\\", "\\\\")
+    # Create the email message
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))  # Attach the body text
+
+    # Attach file if provided
+    if file_path and os.path.exists(file_path):
+       try:
+            print(f"Attempting to open file: {file_path}")
+            with open(file_path, 'rb') as attachment:
+                print("File opened successfully.")
+                part = MIMEBase('application', 'octet-stream')
+                part.set_payload(attachment.read())  # Read the file
+                encoders.encode_base64(part)  # Encode the file in base64
+                part.add_header('Content-Disposition', f'attachment; filename={os.path.basename(file_path)}')
+                msg.attach(part)  # Attach the file
+            print(f"File {os.path.basename(file_path)} attached successfully.")
+       except Exception as e:
+            print(f"Error while attaching file: {str(e)}")
+
+    else:
+        print(f"File not found at: {file_path}")
+
+    # Send the email
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, to_email, msg.as_string())
+        server.quit()
+        print("Email has been sent successfully.")
+        speak("Email has been sent successfully.")
+    except Exception as e:
+        print(f"Failed to send email: {str(e)}")
+
 
 def generate_ai_content(prompt):
     try:
@@ -215,7 +275,7 @@ if __name__ == '__main__':
                 print(e)
                 print("Unable to send the email.")
        
-        elif 'open youtube' in query:
+        elif 'open youtube' in query or 'search youtybe' in query:
             print("What should I search?")
             speak("What should I search?")
             Search_term = TakeCommand().lower()
@@ -223,11 +283,32 @@ if __name__ == '__main__':
             speak("Here we go to Youtube\n")
             wb.open("https://www.youtube.com/results?search_query=" + Search_term)
 
-        elif 'search google' in query:
+        elif 'close youtube' in query:
+          print("Closing youtube")
+          speak("Closing youtube")
+          try:
+           os.system('taskkill /f /im msedge.exe') 
+           speak("youtube has been closed.")
+          except Exception as e:
+           print(f"An error occurred: {str(e)}")
+           speak(f"An error occurred: {str(e)}")
+
+        elif 'search google' in query or 'open google'in query:
             print("What should I search?")
             speak("What should I search?")
             Search_term = TakeCommand().lower()
             wb.open('https://www.google.com/search?q=' + Search_term)
+
+        elif 'close google' in query:
+          print("Closing google")
+          speak("Closing google")
+          try:
+
+           os.system('taskkill /f /im msedge.exe') 
+           speak("google has been closed.")
+          except Exception as e:
+           print(f"An error occurred: {str(e)}")
+           speak(f"An error occurred: {str(e)}")
 
         elif 'cpu' in query:
             cpu()
@@ -389,7 +470,7 @@ if __name__ == '__main__':
             speak("Recycle Bin Recycled") 
         elif "tell me about yourself" in query or "who are you" in query:
             Introduction()
-        elif "tell me about your developer" in query:
+        elif "tell me about your developer" in query or 'who is your developer' in query:
             Creator()
         elif "will you be my girlfriend" in query or "will you be my boyfriend" in query:
             print("No. I don't want to waste my precious time in such poor things. ")
@@ -686,4 +767,5 @@ if __name__ == '__main__':
     
            except ValueError:
                print("Invalid input. Please enter numbers only.")
-        
+        elif 'send file' in query:
+           send_emailing()   
