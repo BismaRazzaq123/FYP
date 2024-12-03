@@ -90,7 +90,7 @@ def TakeCommand():
         return "None"
     return query
 
-def send_emailing():
+def send_email():
     sender_email = 'myjarvis6464@gmail.com'
     sender_password ='xasu itoz wiaj cfes'
     
@@ -160,30 +160,6 @@ def generate_ai_content(prompt):
     except Exception as e:
         print("Error:", e)
         speak("Sorry, I could not generate a response.")
-
-def sendEmail(to, subject, content):
-    sender_email = 'myjarvis6464@gmail.com'  # my email
-    app_password = 'xasu itoz wiaj cfes'  # my App Password
-
-    try:
-        # Setup the SMTP server
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.ehlo()
-        server.starttls()
-        server.login(sender_email, app_password)
-
-        # Prepare the email content
-        email_message = f"Subject: {subject}\n\n{content}"
-
-        # Send the email
-        server.sendmail(sender_email, to, email_message)
-        server.quit()  # Close the connection
-        print(f"Email sent successfully to {to}")
-        speak(f"Email sent successfully to {to}")
-    except Exception as e:
-        print(f"Error: {e}")
-        print("Unable to send the email. Please check the details and try again.")
-        speak("Unable to send the email. Please check the details and try again.")
 
 def cpu():
     usage=str(psutil.cpu_percent())
@@ -258,22 +234,6 @@ if __name__ == '__main__':
             speak("What would you like to know?")
             prompt = TakeCommand()
             generate_ai_content(prompt)    
-        elif 'send email' in query:
-            try:
-                print("What should I say?")
-                speak("What should I say?")
-                content = TakeCommand()
-                print("What is the subject of the email?")
-                speak("What is the subject of the email?")
-                subject = TakeCommand()
-                print("Who is the recipient?")
-                speak("Who is the recipient?")
-                recipient = input("Enter recipient's email address: ")
-                sendEmail(recipient, subject, content)
-                print("The email has been sent successfully.")
-            except Exception as e:
-                print(e)
-                print("Unable to send the email.")
        
         elif 'open youtube' in query or 'search youtybe' in query:
             print("What should I search?")
@@ -767,5 +727,5 @@ if __name__ == '__main__':
     
            except ValueError:
                print("Invalid input. Please enter numbers only.")
-        elif 'send file' in query:
-           send_emailing()   
+        elif 'send email' in query:
+           send_email()   
