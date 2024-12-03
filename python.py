@@ -24,6 +24,7 @@ import pywhatkit as kit
 import cv2
 from requests import get
 import webbrowser
+from tkinter import Tk, filedialog 
 
 # Google Gemini API configuration
 genai.configure(api_key="AIzaSyBOAkMv-bxYz6RsQewoZ7DcOGBDCFFUsOo")
@@ -209,6 +210,81 @@ def screenshot():
     # Save the screenshot
     img.save(save_path)
     print(f"Screenshot saved at {save_path}")
+
+
+def send_emailing():
+    sender_email = 'myjarvis6464@gmail.com'
+    sender_password = 'xasu itoz wiaj cfes'
+
+    # Get email details from user dynamically
+    speak("Please provide the recipient's email")
+    to_email = input("Please provide the recipient's email: ")
+    print("Please tell the subject of the email.")
+    speak("Please tell the subject of the email.")
+    subject = TakeCommand().lower()
+    print("Please provide the body of the email.")
+    speak("Please provide the body of the email.")
+    body = TakeCommand().lower()
+
+    # Ask user if they want to attach a file
+    speak("Do you want to attach a file? Please say yes or no.")
+    print("Do you want to attach a file? (yes/no): ")
+    attach_file_response = input("Do you want to attach a file? (yes/no): ").strip().lower()
+
+    file_path = None
+    if attach_file_response == "yes":
+        speak("Please select a file to attach.")
+        print("Opening file explorer...")
+
+        # Open file explorer to select a file, starting at the specified path
+        Tk().withdraw()  # Hide the root window
+        file_path = filedialog.askopenfilename(initialdir="C:\\Users\\PMLS", title="Select a File")
+
+        if file_path:
+            print(f"File selected: {file_path}")
+        else:
+            print("No file selected.")
+            speak("No file selected. Proceeding without attachment.")
+    elif attach_file_response == "no":
+        print("Proceeding without attaching a file.")
+        speak("Proceeding without attaching a file.")
+    else:
+        print("Invalid response. Proceeding without attaching a file.")
+        speak("Invalid response. Proceeding without attaching a file.")
+
+    # Create the email message
+    msg = MIMEMultipart()
+    msg['From'] = sender_email
+    msg['To'] = to_email
+    msg['Subject'] = subject
+    msg.attach(MIMEText(body, 'plain'))  # Attach the body text
+
+    # Attach file if selected
+    if file_path:
+        try:
+            with open(file_path, 'rb') as attachment:
+                part = MIMEBase('application', 'octet-stream')
+                part.set_payload(attachment.read())
+                encoders.encode_base64(part)
+                part.add_header('Content-Disposition', f'attachment; filename={os.path.basename(file_path)}')
+                msg.attach(part)
+            print(f"File {os.path.basename(file_path)} attached successfully.")
+        except Exception as e:
+            print(f"Error attaching file: {e}")
+            speak("There was an issue attaching the file. Proceeding without it.")
+
+    # Send the email
+    try:
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, sender_password)
+        server.sendmail(sender_email, to_email, msg.as_string())
+        server.quit()
+        print("Email has been sent successfully.")
+        speak("Email has been sent successfully.")
+    except Exception as e:
+        print(f"Failed to send email: {e}")
+        speak("Failed to send the email. Please check the details and try again.")
 
 
 if __name__ == '__main__':
@@ -729,3 +805,5 @@ if __name__ == '__main__':
                print("Invalid input. Please enter numbers only.")
         elif 'send email' in query:
            send_email()   
+        elif 'send file' in query:
+            send_emailing()
