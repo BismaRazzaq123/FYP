@@ -733,4 +733,4 @@ if __name__ == '__main__':
         elif 'send email' in query:
            send_email()   
         elif 'send file' in query:
-            send_emailing()
+            send_email()
