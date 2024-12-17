@@ -286,6 +286,7 @@ if __name__ == '__main__':
         elif 'take screenshot' in query:
             screenshot()
             speak("Screenshot taken and saved!") 
+               
 
         elif "write note" in query:
             print("What should I write, ma'am?")
@@ -667,29 +668,29 @@ if __name__ == '__main__':
 
 
         elif 'send message' in query:
-           speak("Please provide the phone number with country code.")
-           # Take phone number input from the user
-           #phone_number = TakeCommand().replace(" ", "") 
-           phone_number: str = input("Please provide the phone number with the country code (e.g., +923001234567): ").strip()
-           speak("What is the message?")
-           # Take message input from the user
-           message = TakeCommand() 
-           speak("At what hour should I send the message? Please provide a 24-hour format.")
-           # Take hour input from the user
-           hour = int(input("Enter the hour: "))
-           speak("At what minute should I send the message?")
-           # Take minute input from the user
-           minute = int(input("Enter the minute: "))
-           print(f"Sending WhatsApp message to {phone_number} at {hour}:{minute}")
-           speak(f"Sending WhatsApp message to {phone_number} at {hour}:{minute}")
-           # Send the WhatsApp message
-           try:
-             kit.sendwhatmsg(phone_number, message, hour, minute)
-             speak("Message sent successfully.")
-           except Exception as e:
-             print(f"An error occurred: {e}")
-             speak("I encountered an error while sending the message.")
- 
+          speak("Please provide the phone number with country code.")
+          # Take phone number input from the user
+          phone_number: str = input("Please provide the phone number with the country code (e.g., +923001234567): ").strip()
+          speak("What is the message?")
+          # Take message input from the user
+          message = TakeCommand() 
+          speak("At what hour should I send the message? Please provide a 24-hour format.")
+          # Take hour input from the user
+          hour = int(input("Enter the hour: "))
+          speak("At what minute should I send the message?")
+          # Take minute input from the user
+          minute = int(input("Enter the minute: "))
+          print(f"Sending WhatsApp message to {phone_number} at {hour}:{minute}")
+          speak(f"Sending WhatsApp message to {phone_number} at {hour}:{minute}")
+          # Send the WhatsApp message
+          try:
+            kit.sendwhatmsg(phone_number, message, hour, minute)
+            time.sleep(10)  # Wait for the browser to open and the message to be typed
+            pyautogui.press("enter")  # Simulate pressing the "Enter" key to send the message
+            speak("Message sent successfully.")
+          except Exception as e:
+            print(f"An error occurred: {e}")
+            speak("I encountered an error while sending the message.")
         elif 'set alarm' in query:
            # Ask the user for the time input
            print("Please enter the time for the alarm (hour and minute).")
