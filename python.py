@@ -25,6 +25,7 @@ import cv2
 from requests import get
 import webbrowser
 from tkinter import Tk, filedialog 
+import PyPDF2
 
 # Google Gemini API configuration
 genai.configure(api_key="AIzaSyBOAkMv-bxYz6RsQewoZ7DcOGBDCFFUsOo")
@@ -212,6 +213,52 @@ def screenshot():
     # Save the screenshot
     img.save(save_path)
     print(f"Screenshot saved at {save_path}")
+def pdf_reader():
+    try:
+        # Ask the user for the file path
+        speak("Please enter the full path of the PDF file you want to read:")
+        file_path = input("Enter the full file path (e.g., C:/Users/YourUsername/Desktop/filename.pdf): ").strip()
+        
+        # Check if the file exists
+        if not os.path.exists(file_path):
+            speak("The specified file does not exist. Please check the path and try again.")
+            return
+        
+        # Open and read the PDF file
+        with open(file_path, 'rb') as book:
+            pdfReader = PyPDF2.PdfReader(book)  # Use PdfReader instead of PdfFileReader
+            pages = len(pdfReader.pages)
+            speak(f"The total number of pages in the selected book is {pages}.")
+            
+            # Ask for the page number to read
+            speak("Please enter the page number you want me to read:")
+            try:
+                pg = int(input(f"Enter a page number (0 to {pages - 1}): "))
+            except ValueError:
+                speak("Invalid input. Please enter a numeric page number.")
+                return
+            
+            # Validate page number
+            if pg < 0 or pg >= pages:
+                speak(f"Invalid page number. Please enter a number between 0 and {pages - 1}.")
+                return
+            
+            # Extract and speak the text from the page
+            page = pdfReader.pages[pg]
+            text = page.extract_text()
+            if text.strip():
+                speak("Here is the content of the page:")
+                speak(text)
+            else:
+                speak("This page appears to be empty or unreadable.")
+    
+    except FileNotFoundError:
+        speak("The file was not found. Please ensure the path is correct.")
+    except PermissionError:
+        speak("Permission denied. Please close the file if it's open in another application.")
+    except Exception as e:
+        speak(f"An unexpected error occurred: {str(e)}")
+
 
 if __name__ == '__main__':
     wishme()
@@ -735,3 +782,5 @@ if __name__ == '__main__':
            send_email()   
         elif 'send file' in query:
             send_email()
+        elif'read pdf' in query:
+             pdf_reader() 
